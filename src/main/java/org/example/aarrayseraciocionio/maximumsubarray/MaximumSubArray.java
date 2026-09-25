@@ -4,12 +4,18 @@ public class MaximumSubArray {
     // minha solução
     public static int[] maximumSubArray(int[] array) {
         int maiorSomaAnterior = array[0];
-        int fim;
         int soma;
         int[] info = new int[3];
 
         for (int i = 0; i < array.length; i++) {
             soma = array[i];
+
+            if(soma > maiorSomaAnterior) {
+                maiorSomaAnterior = soma;
+                info[0] = i;
+                info[1] = i;
+                info[2] = maiorSomaAnterior;
+            }
 
             for (int j = i+1; j < array.length; j++) {
                 soma += array[j];
@@ -44,4 +50,69 @@ public class MaximumSubArray {
             Essa é uma solução brute force, vamos passar ainda pra uma solução mais otimizada.
 
          */
+
+    public static int[] maximumSubArray2(int[] array) {
+        int maiorSomaAnterior = array[0];
+        int soma = 0;
+        int inicioSubArray = 0;
+        int fimSubArray = 0;
+
+        for (int i = 0; i < array.length; i++) {
+
+            soma += array[i];
+
+            if(soma > maiorSomaAnterior) {
+                maiorSomaAnterior = soma;
+                fimSubArray = i;
+            }
+
+            if(soma < 0) {
+                soma = 0;
+
+                if(inicioSubArray <= fimSubArray){
+                    inicioSubArray = i + 1;
+                }else{
+                    inicioSubArray = fimSubArray;
+                }
+
+            }
+
+        }
+
+        return new int[]{inicioSubArray, fimSubArray, maiorSomaAnterior};
+    }
+
+    public static int[] maximumSubArray3(int[] array) {
+
+        int somaAtual = 0;
+        int melhorSoma = array[0];
+
+        int inicioAtual = 0;
+        int melhorInicio = 0;
+        int melhorFim = 0;
+
+        for (int i = 0; i < array.length; i++) {
+
+            somaAtual += array[i];
+
+            // Encontramos uma soma melhor
+            if (somaAtual > melhorSoma) {
+                melhorSoma = somaAtual;
+                melhorInicio = inicioAtual;
+                melhorFim = i;
+            }
+
+            // A soma ficou negativa: começamos outro subarray
+            if (somaAtual < 0) {
+                somaAtual = 0;
+                inicioAtual = i + 1;
+            }
+        }
+
+        return new int[]{
+                melhorInicio,
+                melhorFim,
+                melhorSoma
+        };
+    }
 }
